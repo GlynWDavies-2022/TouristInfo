@@ -1,0 +1,8 @@
+.idea/
+.vs
+[Bb]in/
+TouristInfo.API.csproj.user
+[Cc]onfig/
+[Dd]ependencies/
+[Oo]bj/
+packages
