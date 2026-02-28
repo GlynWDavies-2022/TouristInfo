@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using TouristInfo.API.Data;
 
 namespace TouristInfo.API.Controllers;
 
@@ -9,11 +10,6 @@ public class CitiesController : ControllerBase
     [HttpGet]
     public JsonResult GetCities()
     {
-        return new JsonResult(
-            new[]
-            {
-                new { Id = 1, Name = "New York" },
-                new { Id = 2, Name = "Antwerp" }
-            });
+        return new JsonResult(CitiesDataStore.Current.Cities);
     }
 }
