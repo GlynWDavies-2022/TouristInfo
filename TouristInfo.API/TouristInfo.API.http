@@ -1,6 +1,117 @@
-@TouristInfo.API_HostAddress = http://localhost:5208
+@baseUrl = https://localhost:7112
+@cityId = 1
+@pointOfInterestId = 1
 
-GET {{TouristInfo.API_HostAddress}}/weatherforecast/
+###
+### Cities Endpoints
+###
+
+### Get all cities
+GET {{baseUrl}}/api/cities
+Accept: application/json
+
+### Get all cities (XML format)
+GET {{baseUrl}}/api/cities
+Accept: application/xml
+
+### Get specific city
+GET {{baseUrl}}/api/cities/{{cityId}}
+Accept: application/json
+
+### Get city that doesn't exist
+GET {{baseUrl}}/api/cities/999
 Accept: application/json
 
 ###
+### Points of Interest Endpoints
+###
+
+### Get all points of interest for a city
+GET {{baseUrl}}/api/cities/{{cityId}}/pointsofinterest
+Accept: application/json
+
+### Get specific point of interest
+GET {{baseUrl}}/api/cities/{{cityId}}/pointsofinterest/{{pointOfInterestId}}
+Accept: application/json
+
+### Get point of interest that doesn't exist
+GET {{baseUrl}}/api/cities/{{cityId}}/pointsofinterest/999
+Accept: application/json
+
+### Create a new point of interest
+POST {{baseUrl}}/api/cities/{{cityId}}/pointsofinterest
+Content-Type: application/json
+
+{
+  "name": "New Attraction",
+  "description": "A wonderful new place to visit"
+}
+
+### Update point of interest (full update with PUT)
+PUT {{baseUrl}}/api/cities/{{cityId}}/pointsofinterest/{{pointOfInterestId}}
+Content-Type: application/json
+
+{
+  "name": "Updated Attraction Name",
+  "description": "Updated description for this location"
+}
+
+### Partially update point of interest (PATCH with JSON Patch - Replace operation)
+PATCH {{baseUrl}}/api/cities/{{cityId}}/pointsofinterest/{{pointOfInterestId}}
+Content-Type: application/json-patch+json
+
+[
+  {
+    "op": "replace",
+    "path": "/name",
+    "value": "Patched Name"
+  }
+]
+
+### Partially update point of interest (PATCH with JSON Patch - Multiple operations)
+PATCH {{baseUrl}}/api/cities/{{cityId}}/pointsofinterest/{{pointOfInterestId}}
+Content-Type: application/json-patch+json
+
+[
+  {
+    "op": "replace",
+    "path": "/name",
+    "value": "Completely New Name"
+  },
+  {
+    "op": "replace",
+    "path": "/description",
+    "value": "Completely new description"
+  }
+]
+
+### Delete point of interest
+DELETE {{baseUrl}}/api/cities/{{cityId}}/pointsofinterest/{{pointOfInterestId}}
+
+###
+### File Endpoints
+###
+
+### Get a file
+GET {{baseUrl}}/api/files/sample-file-identifier
+Accept: application/pdf
+
+### Upload a PDF file (requires multipart/form-data)
+# Note: You'll need to update this with an actual file path on your system 
+POST {{baseUrl}}/api/files
+Content-Type: multipart/form-data; boundary=----WebKitFormBoundary7MA4YWxkTrZu0gW
+
+------WebKitFormBoundary7MA4YWxkTrZu0gW
+Content-Disposition: form-data; name="file"; filename="sample-file.pdf"
+Content-Type: application/pdf
+
+< ./sample-file.pdf
+------WebKitFormBoundary7MA4YWxkTrZu0gW--
+
+###
+### OpenAPI Documentation Endpoints
+###
+
+### Get OpenAPI JSON document
+GET {{baseUrl}}/openapi/v1.json
+Accept: application/json
