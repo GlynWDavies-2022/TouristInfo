@@ -8,8 +8,21 @@ namespace TouristInfo.API.Controllers;
 public class CitiesController : ControllerBase
 {
     [HttpGet]
-    public JsonResult GetCities()
+    public ActionResult GetCities()
     {
-        return new JsonResult(CitiesDataStore.Current.Cities);
+        return Ok(CitiesDataStore.Current.Cities);
+    }
+
+    [HttpGet("{id}")]
+    public ActionResult GetCity(int id)
+    {
+        var cityToReturn = CitiesDataStore.Current.Cities.FirstOrDefault(c => c.Id == id);
+
+        if (cityToReturn == null)
+        {
+            return NotFound();
+        }
+
+        return Ok(cityToReturn);
     }
 }
