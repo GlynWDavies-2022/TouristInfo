@@ -8,9 +8,19 @@
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddControllers();
+builder.Services.AddControllers()
+    .AddXmlDataContractSerializerFormatters();
 
 builder.Services.AddOpenApi();
+
+builder.Services.AddProblemDetails(options =>
+    options.CustomizeProblemDetails = ctx =>
+    {
+        ctx.ProblemDetails.Extensions
+            .Add("additionalInfo", "Additional info example");
+        ctx.ProblemDetails.Extensions
+            .Add("server", Environment.MachineName);
+    });
 
 var app = builder.Build();
 
