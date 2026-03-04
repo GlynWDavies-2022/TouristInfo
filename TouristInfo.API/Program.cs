@@ -6,6 +6,8 @@
 // Service Container
 // ------------------------------------------------------------------------------------------------
 
+using Microsoft.AspNetCore.StaticFiles;
+
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers()
@@ -21,6 +23,8 @@ builder.Services.AddProblemDetails(options =>
         ctx.ProblemDetails.Extensions
             .Add("server", Environment.MachineName);
     });
+
+builder.Services.AddSingleton<FileExtensionContentTypeProvider>();
 
 var app = builder.Build();
 
