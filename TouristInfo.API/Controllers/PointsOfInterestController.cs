@@ -8,6 +8,39 @@ namespace TouristInfo.API.Controllers;
 [ApiController]
 public class PointsOfInterestController : ControllerBase
 {
+    [HttpPost]
+    public ActionResult<PointOfInterestDTO> CreatePointOfInterest(int cityId, PointOfInterestForCreationDTO pointOfInterest)
+    {
+        var city = CitiesDataStore.Current.Cities.FirstOrDefault(city => city.Id == cityId);
+
+        if (city == null)
+        {
+
+            return NotFound($"City with id {cityId} was not found");
+        }
+
+        var maxPointOfInterestId = CitiesDataStore.Current.Cities.SelectMany(city => city.PointsOfInterest).Max(point => point.Id);
+
+        var finalPointOfInterest = new PointOfInterestDTO()
+        {
+            Id = ++maxPointOfInterestId,
+            Name = pointOfInterest.Name,
+            Description = pointOfInterest.Description
+        };
+
+        city.PointsOfInterest.Add(finalPointOfInterest);
+
+        return CreatedAtRoute(
+            "GetPointOfInterest",
+            new
+            {
+                cityId,
+                pointOfInterestId = finalPointOfInterest.Id
+            },
+            finalPointOfInterest
+        );
+    }
+    
     [HttpGet()]
     public ActionResult<IEnumerable<PointOfInterestDTO>> GetPointsOfInterest(int cityId)
     {
@@ -23,7 +56,7 @@ public class PointsOfInterestController : ControllerBase
         return Ok(pointsOfInterest);
     }
 
-    [HttpGet("{pointOfInterestId}")]
+    [HttpGet("{pointOfInterestId}", Name = "GetPointOfInterest")]
     public ActionResult<PointOfInterestDTO> GetPointOfInterest(int cityId, int pointOfInterestId)
     {
         var city = CitiesDataStore.Current.Cities.FirstOrDefault(city => city.Id == cityId);
