@@ -2,13 +2,16 @@
 using Microsoft.AspNetCore.Mvc;
 using TouristInfo.API.Data;
 using TouristInfo.API.Models;
+using TouristInfo.API.Services;
 
 namespace TouristInfo.API.Controllers;
 
 [Route("api/cities/{cityId}/pointsofinterest")]
 [ApiController]
-public class PointsOfInterestController : ControllerBase
+public class PointsOfInterestController(ILogger<PointsOfInterestController> logger, IMailService mailService) : ControllerBase
 {
+    private readonly ILogger<PointsOfInterestController> _logger = logger;
+
     [HttpPost]
     public ActionResult<PointOfInterestDTO> CreatePointOfInterest(int cityId, PointOfInterestForCreationDTO pointOfInterest)
     {
@@ -16,6 +19,7 @@ public class PointsOfInterestController : ControllerBase
 
         if (city == null)
         {
+            _logger.LogWarning($"City with id {cityId} was not found");
 
             return NotFound($"City with id {cityId} was not found");
         }
@@ -49,6 +53,8 @@ public class PointsOfInterestController : ControllerBase
 
         if (city == null)
         {
+            _logger.LogInformation($"City with id {cityId} was not found");
+
             return NotFound($"City with id {cityId} was not found.");
         }
 
@@ -64,6 +70,8 @@ public class PointsOfInterestController : ControllerBase
 
         if (city == null)
         {
+            _logger.LogInformation($"City with id {cityId} was not found");
+
             return NotFound($"City with id {cityId} was not found.");
         }
 
@@ -71,6 +79,8 @@ public class PointsOfInterestController : ControllerBase
 
         if (pointOfInterest == null)
         {
+            _logger.LogInformation($"City with id {cityId} was not found");
+
             return NotFound($"Point of Interest with id {pointOfInterestId} on city with id of {cityId} was not found");
         }
 
@@ -118,6 +128,8 @@ public class PointsOfInterestController : ControllerBase
         }
 
         city.PointsOfInterest.Remove(pointOfInterestFromStore);
+
+        mailService.Send("Point of interest deleted.",$"Point of interest {pointOfInterestFromStore.Name} with id {pointOfInterestFromStore.Id} was deleted.");
 
         return NoContent();
     }

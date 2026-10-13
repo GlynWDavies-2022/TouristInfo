@@ -4,6 +4,7 @@
 
 using Microsoft.AspNetCore.StaticFiles;
 using Scalar.AspNetCore;
+using TouristInfo.API.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -24,6 +25,8 @@ builder.Services.AddProblemDetails(options =>
     });
 
 builder.Services.AddSingleton<FileExtensionContentTypeProvider>();
+
+builder.Services.AddTransient<IMailService, LocalMailService>();
 
 builder.Services.AddOpenApi();
 
