@@ -3,7 +3,9 @@
 // ------------------------------------------------------------------------------------------------
 
 using Microsoft.AspNetCore.StaticFiles;
+using Microsoft.EntityFrameworkCore;
 using Scalar.AspNetCore;
+using TouristInfo.API.DBContext;
 using TouristInfo.API.Services;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -27,6 +29,10 @@ builder.Services.AddProblemDetails(options =>
 builder.Services.AddSingleton<FileExtensionContentTypeProvider>();
 
 builder.Services.AddTransient<IMailService, LocalMailService>();
+
+builder.Services.AddDbContext<CityInfoDbContext>(dbContextOptions =>
+    dbContextOptions.UseSqlServer(
+        builder.Configuration["ConnectionStrings:CityInfoDBConnectionString"] ?? throw new InvalidOperationException()));
 
 builder.Services.AddOpenApi();
 
